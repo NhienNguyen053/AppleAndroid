@@ -40,8 +40,12 @@ android {
 }
 
 dependencies {
-    implementation("com.squareup.okhttp3:okhttp:4.9.3")
-    implementation (libs.kotlinx.coroutines.android)
+    implementation(libs.okhttp)
+    implementation(libs.jwtdecode)
+    implementation(libs.gson)
+    implementation(libs.coil.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -50,6 +54,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.firebase.crashlytics.buildtools)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
