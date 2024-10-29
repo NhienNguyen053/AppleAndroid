@@ -282,6 +282,7 @@ fun OrderRow(order: Order, role: String?, token: String?, onOrderUpdate: (Order)
     var showShippingDialog by remember { mutableStateOf(false) }
     var selectedDriver by remember { mutableStateOf<Driver?>(null) }
     var desc by remember { mutableStateOf("") }
+    var temp by remember { mutableStateOf("") }
     val jwt = token?.let { JWT(it) }
     val id = jwt?.getClaim("Id")?.asString()
 
@@ -425,6 +426,7 @@ fun OrderRow(order: Order, role: String?, token: String?, onOrderUpdate: (Order)
                     onDismiss = { showShippingDialog = false },
                     onConfirm = {
                         showShippingDialog = false
+                        temp = desc
                         val newShippingDetail = ShippingDetails(
                             dispatcherId = id,
                             dispatchedToId = null,
@@ -433,7 +435,7 @@ fun OrderRow(order: Order, role: String?, token: String?, onOrderUpdate: (Order)
                             dateCreated = getCurrentDateTime(),
                         )
                         CoroutineScope(Dispatchers.Main).launch {
-                            shippingOrder(token, order.id, id, null, null, desc, newShippingDetail.dateCreated, status)
+                            shippingOrder(token, order.id, id, null, null, temp, newShippingDetail.dateCreated, status)
                         }
                         desc = ""
                         val updatedOrder = order.copy(
@@ -443,6 +445,7 @@ fun OrderRow(order: Order, role: String?, token: String?, onOrderUpdate: (Order)
                         onOrderUpdate(updatedOrder)
                     },
                     onDescriptionChange = { desc = it },
+                    text = status
                 )
             }
         }
@@ -518,13 +521,14 @@ fun ShippingDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
     onDescriptionChange: (String) -> Unit,
+    text: String,
 ) {
 
     var desc by remember { mutableStateOf("") }
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Shipping Order") },
+        title = { Text("$text Order") },
         text = {
             Column {
                 TextField(
@@ -545,7 +549,7 @@ fun ShippingDialog(
                     contentColor = Color.White
                 ),
             ) {
-                Text("Shipping")
+                Text(text)
             }
         },
         dismissButton = {
